@@ -7,9 +7,9 @@ query = 'search sourcetype=access_* status=200 action=purchase | top categoryId'
 
 splunk = Splunk::connect(connect_config)
 
-header = [{"cols" => [{"value" => "Game Category"},
-                       {"value" => "Number of Purchases", "style" => "text-align:center"},
-                       {"value" => "Purchase Percentage", "style" => "text-align:center"}
+header = [{"cols" => [{"value" => "Category"},
+                       {"value" => "No. of Purchases"},
+                       {"value" => "Purchase Percent"}
                      ]}]
 
 # :first_in sets how long it takes before the job is first run. In this case, it is run immediately
@@ -23,8 +23,8 @@ SCHEDULER.every '30m', :first_in => 0 do |job|
 
   results.each do |result|
     row = [{"value" => result['categoryId']}, 
-           {"value" => result['count'], "style" => "text-align:center"},
-           {"value" => result['percent'], "style" => "text-align:center"}
+           {"value" => result['count']},
+           {"value" => result['percent']}
           ]
       rows << { "cols" => row }
   end
