@@ -12,7 +12,13 @@ splunk = Splunk::connect(connect_config)
 # :first_in sets how long it takes before the job is first run. In this case, it is run immediately
 SCHEDULER.every '30m', :first_in => 0 do |job|
 
-  stream = splunk.create_oneshot(query)
+  stream = nil
+  begin
+    stream = splunk.create_oneshot(query)
+  rescue Exception => e
+    puts 'Splunk connect failed. Please check your configuration and ensure that splunk is running. Exception message: ' + e.message
+    next
+  end
 
   results = Splunk::ResultsReader.new(stream)
 
